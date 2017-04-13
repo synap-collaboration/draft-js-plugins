@@ -4,8 +4,21 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## To Be Released
+### Added
 
-### Changed
+- Added {allowImageCache, imageType} properties to  config object.
+- Add `emojione` as a dependency.
+- Add `lodash.keys` as a dependency.
+- Update the list of Emojis from Emojione `2.1.2` to `2.2.6`. Thanks to @mzbac
+- The config object will accept a property `priorityList` which should contain Emoji entries used by EmojiOne. These entries will be show first in the EmojiSuggestions dropdown after typing `:`. Thanks to @mzbac
+
+## 1.2.3 - 2016-07-06
+
+[#309](https://github.com/draft-js-plugins/draft-js-plugins/commit/bac8c30f5e324f1fa13b11eeecbaec9172adeb58) Fix Emoji `positionSuggestions` as we introduced a bug in the last version. Thanks to @Zhouzi
+
+## 1.2.2 - 2016-06-26
+
+### Fixed
 
 - `positionSuggestions` now works by default with non-static parents. Thanks to @Zhouzi
 [#309](https://github.com/draft-js-plugins/draft-js-plugins/pull/309)

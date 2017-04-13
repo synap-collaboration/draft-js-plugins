@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import unionClassNames from 'union-class-names';
 import styles from './styles.css';
 import ContainerBox from '../ContainerBox';
-import unionClassNames from 'union-class-names';
 
 export default class Container extends Component {
 
@@ -9,9 +9,9 @@ export default class Container extends Component {
     const { className } = this.props;
     const combinedClassName = unionClassNames(styles.root, className);
     return (
-      <div className={ combinedClassName }>
+      <div className={combinedClassName}>
         <ContainerBox>
-          { this.props.children }
+          {this.props.children}
         </ContainerBox>
       </div>
     );

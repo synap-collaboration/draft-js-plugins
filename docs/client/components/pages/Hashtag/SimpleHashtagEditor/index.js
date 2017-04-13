@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor';
-import createHashtagPlugin from 'draft-js-hashtag-plugin';
+import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor'; // eslint-disable-line import/no-unresolved
+import createHashtagPlugin from 'draft-js-hashtag-plugin'; // eslint-disable-line import/no-unresolved
 import editorStyles from './editorStyles.css';
 
 const hashtagPlugin = createHashtagPlugin();
@@ -22,17 +22,17 @@ export default class SimpleHashtagEditor extends Component {
   };
 
   focus = () => {
-    this.refs.editor.focus();
+    this.editor.focus();
   };
 
   render() {
     return (
-      <div className={ editorStyles.editor } onClick={ this.focus }>
+      <div className={editorStyles.editor} onClick={this.focus}>
         <Editor
           editorState={this.state.editorState}
           onChange={this.onChange}
           plugins={plugins}
-          ref="editor"
+          ref={(element) => { this.editor = element; }}
         />
       </div>
     );

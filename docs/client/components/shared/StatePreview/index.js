@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import styles from './styles.css';
 import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
+import styles from './styles.css';
 
 export default class StatePreview extends Component {
 
-  shouldComponentUpdate = shouldComponentUpdate;
+  shouldComponentUpdate = shouldComponentUpdate; // eslint-disable-line no-redeclare
 
   render() {
     const codeClassName = this.props.collapsed ? styles.collapsedCode : styles.expandedCode;
@@ -15,9 +15,9 @@ export default class StatePreview extends Component {
     }
 
     return (
-      <div className={ styles.root }>
-        <pre className={ codeClassName }>
-          { code }
+      <div className={styles.root}>
+        <pre className={codeClassName}>
+          {code}
         </pre>
       </div>
     );

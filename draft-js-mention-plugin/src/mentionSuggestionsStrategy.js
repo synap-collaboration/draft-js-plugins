@@ -1,9 +1,8 @@
 /* @flow */
 
 import findWithRegex from 'find-with-regex';
+import escapeRegExp from 'lodash.escaperegexp';
 
-const MENTION_REGEX = /(\s|^)@[\w]*/g;
-
-export default (contentBlock: Object, callback: Function) => {
-  findWithRegex(MENTION_REGEX, contentBlock, callback);
+export default (trigger: String, regExp: String) => (contentBlock: Object, callback: Function) => {
+  findWithRegex(new RegExp(`(\\s|^)${escapeRegExp(trigger)}${regExp}`, 'g'), contentBlock, callback);
 };

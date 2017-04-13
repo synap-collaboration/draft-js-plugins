@@ -14,9 +14,10 @@ export default class Sticker extends Component {
   render() {
     const { block, stickers, theme = {} } = this.props;
     const removeButton = (
+      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
       <span
-        className={ theme.stickerRemoveButton }
-        onClick={ this.remove }
+        className={theme.stickerRemoveButton}
+        onClick={this.remove}
         role="button"
       >
         ✕
@@ -26,16 +27,16 @@ export default class Sticker extends Component {
     const data = Entity.get(block.getEntityAt(0)).getData();
     return (
       <figure
-        contentEditable={ false }
-        data-offset-key={ `${block.get('key')}-0-0` }
-        className={ theme.sticker }
+        contentEditable={false}
+        data-offset-key={`${block.get('key')}-0-0`}
+        className={theme.sticker}
       >
         <img
-          className={ theme.stickerImage }
-          src={ stickers.getIn(['data', data.id, 'url']) }
+          className={theme.stickerImage}
+          src={stickers.getIn(['data', data.id, 'url'])}
           role="presentation"
         />
-        { this.props.attachRemoveButton ? removeButton : null }
+        {this.props.attachRemoveButton ? removeButton : null}
       </figure>
     );
   }

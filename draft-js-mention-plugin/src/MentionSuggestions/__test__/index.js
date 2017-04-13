@@ -25,7 +25,7 @@ const mentions = fromJS([
   {
     name: 'Max Stoiber',
     link: 'https://twitter.com/mxstbr',
-    avatar: 'https://pbs.twimg.com/profile_images/681114454029942784/PwhopfmU_400x400.jpg',
+    avatar: 'https://pbs.twimg.com/profile_images/763033229993574400/6frGyDyA_400x400.jpg',
   },
   {
     name: 'Nik Graf',
@@ -46,10 +46,10 @@ describe('MentionSuggestions Component', () => {
       onUpArrow: sinon.spy(),
       onTab: sinon.spy(),
       onEscape: sinon.spy(),
-      handleReturn: sinon.spy(),
+      handleReturn: sinon.spy()
     };
     const store = {
-      getAllSearches: sinon.spy(),
+      getAllSearches: sinon.spy(() => ({ has: () => false })),
       getPortalClientRect: sinon.spy(),
       isEscaped: sinon.spy(),
       resetEscapedSearch: sinon.spy(),
@@ -57,6 +57,7 @@ describe('MentionSuggestions Component', () => {
     };
     const ariaProps = {};
     const onSearchChange = sinon.spy();
+    const onAddMention = sinon.spy();
     const positionSuggestions = sinon.stub().returns({});
     const suggestions = mount(
       <MentionSuggestions
@@ -67,6 +68,7 @@ describe('MentionSuggestions Component', () => {
         callbacks={callbacks}
         store={store}
         theme={{}}
+        onAddMention={onAddMention}
       />
     );
 

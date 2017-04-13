@@ -1,23 +1,27 @@
+import { Map, List } from 'immutable';
+
+import keys from 'lodash.keys';
+import decorateComponentWithProps from 'decorate-component-with-props';
+import { EditorState } from 'draft-js';
 import Emoji from './Emoji';
 import EmojiSuggestions from './EmojiSuggestions';
 import EmojiSuggestionsPortal from './EmojiSuggestionsPortal';
 import emojiStrategy from './emojiStrategy';
 import emojiSuggestionsStrategy from './emojiSuggestionsStrategy';
-import decorateComponentWithProps from 'decorate-component-with-props';
-import { Map } from 'immutable';
 import emojiStyles from './emojiStyles.css';
 import emojiSuggestionsStyles from './emojiSuggestionsStyles.css';
 import emojiSuggestionsEntryStyles from './emojiSuggestionsEntryStyles.css';
 import attachImmutableEntitiesToEmojis from './modifiers/attachImmutableEntitiesToEmojis';
 import defaultPositionSuggestions from './utils/positionSuggestions';
-import { EditorState } from 'draft-js';
+import emojiList from './utils/emojiList';
 
 const defaultImagePath = '//cdn.jsdelivr.net/emojione/assets/svg/';
-const cacheBustParam = '?v=2.1.2';
+const defaultImageType = 'svg';
+const defaultCacheBustParam = '?v=2.2.6';
 
 // TODO activate/deactivate different the conversion or search part
 
-const createEmojiPlugin = (config = {}) => {
+export default (config = {}) => {
   const defaultTheme = {
     emoji: emojiStyles.emoji,
     emojiCharacter: emojiStyles.emojiCharacter,
@@ -50,7 +54,7 @@ const createEmojiPlugin = (config = {}) => {
   };
 
   let searches = Map();
-  let escapedSearch = undefined;
+  let escapedSearch;
   let clientRectFunctions = Map();
 
   const store = {
@@ -91,22 +95,32 @@ const createEmojiPlugin = (config = {}) => {
     theme = defaultTheme,
     positionSuggestions = defaultPositionSuggestions,
     imagePath = defaultImagePath,
+    imageType = defaultImageType,
+    allowImageCache,
+    priorityList,
   } = config;
+
+  const cacheBustParam = allowImageCache ? '' : defaultCacheBustParam;
+
+  // if priorityList is configured in config then set priorityList
+  if (priorityList) emojiList.setPriorityList(priorityList);
   const emojiSearchProps = {
     ariaProps,
     cacheBustParam,
     callbacks,
     imagePath,
+    imageType,
     theme,
     store,
     positionSuggestions,
+    shortNames: List(keys(emojiList.list)),
   };
   return {
     EmojiSuggestions: decorateComponentWithProps(EmojiSuggestions, emojiSearchProps),
     decorators: [
       {
         strategy: emojiStrategy,
-        component: decorateComponentWithProps(Emoji, { theme, imagePath, cacheBustParam }),
+        component: decorateComponentWithProps(Emoji, { theme, imagePath, imageType, cacheBustParam }),
       },
       {
         strategy: emojiSuggestionsStrategy,
@@ -153,5 +167,3 @@ const createEmojiPlugin = (config = {}) => {
     },
   };
 };
-
-export default createEmojiPlugin;

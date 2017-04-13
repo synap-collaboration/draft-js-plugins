@@ -6,7 +6,7 @@ class CustomCounter extends Component {
   static propTypes = {
     theme: PropTypes.any,
     limit: PropTypes.number,
-    countFunction: PropTypes.function,
+    countFunction: PropTypes.func.isRequired,
   };
 
   getClassNames(count, limit) {
@@ -22,7 +22,7 @@ class CustomCounter extends Component {
     const count = countFunction(plainText);
     const classNames = this.getClassNames(count, limit);
 
-    return <span className={ classNames }>{count}</span>;
+    return <span className={classNames}>{count}</span>;
   }
 }
 

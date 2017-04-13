@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
-import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor';
-import createHashtagPlugin from 'draft-js-hashtag-plugin';
-import editorStyles from './editorStyles.css';
-import colorStyleMap from './colorStyleMap';
-import ColorControls from './ColorControls';
 import {
   EditorState,
   Modifier,
   RichUtils,
 } from 'draft-js';
+// eslint-disable-next-line import/no-unresolved
+import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor';
+// eslint-disable-next-line import/no-unresolved
+import createHashtagPlugin from 'draft-js-hashtag-plugin';
+import editorStyles from './editorStyles.css';
+import colorStyleMap from './colorStyleMap';
+import ColorControls from './ColorControls';
 import * as colorPlugin from './colorPlugin';
 
 const hashtagPlugin = createHashtagPlugin();
@@ -30,7 +32,7 @@ export default class SimpleHashtagEditor extends Component {
   };
 
   focus = () => {
-    this.refs.editor.focus();
+    this.editor.focus();
   };
 
   toggleColor = (toggledColor) => {
@@ -53,8 +55,8 @@ export default class SimpleHashtagEditor extends Component {
 
     // Unset style override for current color.
     if (selection.isCollapsed()) {
-      nextEditorState = currentStyle.reduce((state, color) => (
-        RichUtils.toggleInlineStyle(state, color)
+      nextEditorState = currentStyle.reduce((currentEditorState, color) => (
+        RichUtils.toggleInlineStyle(currentEditorState, color)
       ), nextEditorState);
     }
 
@@ -71,12 +73,12 @@ export default class SimpleHashtagEditor extends Component {
 
   render() {
     return (
-      <div className={ editorStyles.editor } onClick={ this.focus }>
+      <div className={editorStyles.editor} onClick={this.focus}>
         <Editor
           editorState={this.state.editorState}
           onChange={this.onChange}
           plugins={plugins}
-          ref="editor"
+          ref={(element) => { this.editor = element; }}
         />
         <ColorControls
           editorState={this.state.editorState}

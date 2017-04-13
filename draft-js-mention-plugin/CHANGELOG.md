@@ -5,8 +5,33 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## To Be Released
 
-### Changed
+### Added
 
+- Introduced a new configuration option `mentionTrigger`. By default it is set to `@`. As before by default typing `@` will trigger the search for mentions. You can provide a custom character or string to change when the search is triggered. [#320](https://github.com/draft-js-plugins/draft-js-plugins/pull/320) Thanks to @yjang1031
+- MentionSuggestions accepts a new prop `entryComponent`. The passed component is used as the template for each of the suggestions' entry. [#317](https://github.com/draft-js-plugins/draft-js-plugins/pull/327). Thanks to @Zhouzi
+- `defaultEntryComponent` component is passed `searchValue` prop to enable more customizations when displaying the the MentionSuggestions. Thanks to @nishp1
+- The config now accepts a new prop `mentionComponent`. If provided the passed component is used to render a Mention. [#271](https://github.com/draft-js-plugins/draft-js-plugins/pull/271). Thanks to @alexkuz
+- Introduced the `mentionRegExp` configuration to overwrite the regular expression for initiating the dropdown. By default this supports any alphanumeric character as well as Chinese, Japanese & Korean characters.
+- Added support for Chinese words. Thanks to @mzbac
+- Added support for Japanese characters (hiragana & katakana).
+- Added support for Korean characters (Hangul Syllables & Hangul Compatibility Jamo). Thanks to @FourwingsY
+- Added `onAddMention` prop to MentionSuggestions. The first argument of this callback will contain the mention entry.
+
+### Fixed
+
+- Mentions popover showed up when typing before a @ [#323](https://github.com/draft-js-plugins/draft-js-plugins/issues/323) Thanks to @nishp1
+- Only pass element properties to the root Div of MentionSuggestions to remove the "Unknown prop warning" in React 15.2.0
+- Fixed bug where a user typed @xxx (invalid mention) and hit Enter. [#416](https://github.com/draft-js-plugins/draft-js-plugins/pull/416)
+- Fixed bug where press up arrow would not cycle back to the bottom of suggestions
+- Fixed race condition where the SuggestionPortal would unregister and not register again when inputting Japanese, etc.
+- Fixed bug where `mentionPrefix` does not appear in `editorState`. `mentionPrefix` is no longer passed to `mentionComponent`.
+- Fixed bug where `onSearchChange` didn't fire when a user switched between two different mention autocompletions with the same search value. Now it will trigger `onSearchChange` in such a case.
+
+## 1.1.2 - 2016-06-26
+
+### Fixed
+
+- Accepts plain JavaScript Objects for mentions from now on. Until now it only accepted an `Immutable.Map`. This change would make it play nicer together with `convertFromRaw` by default. Thanks to @anderslemke [#326](https://github.com/draft-js-plugins/draft-js-plugins/pull/326)
 - `positionSuggestions` now works by default with non-static parents. Thanks to @Zhouzi
 [#309](https://github.com/draft-js-plugins/draft-js-plugins/pull/309)
 [#206](https://github.com/draft-js-plugins/draft-js-plugins/issues/206)

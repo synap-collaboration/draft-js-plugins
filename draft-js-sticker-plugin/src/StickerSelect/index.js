@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import StickerOption from './StickerOption';
-import add from '../modifiers/addSticker';
+import addSticker from '../modifiers/addSticker';
 
 /**
  * Sets the CSS overflow value to newValue
@@ -63,7 +63,7 @@ export default class StickerSelect extends Component {
   // Add a sticker to the editor
   add = (id) => {
     const { editor } = this.props;
-    editor.onChange(add(editor.state.editorState, id));
+    editor.onChange(addSticker(editor.state.editorState, id));
   };
 
   render() {
@@ -74,10 +74,10 @@ export default class StickerSelect extends Component {
       return (
         <StickerOption
           theme={this.props.theme}
-          key={ id }
-          onClick={ this.add }
-          id={ id }
-          url={ url }
+          key={id}
+          onClick={this.add}
+          id={id}
+          url={url}
         />
       );
     });
@@ -91,23 +91,23 @@ export default class StickerSelect extends Component {
       theme.selectButton;
 
     return (
-      <div className={ theme.select }>
+      <div className={theme.select}>
         <button
-          className={ buttonClassName }
-          onMouseUp={ this.openPopover }
+          className={buttonClassName}
+          onMouseUp={this.openPopover}
           type="button"
         >
-          { this.props.selectButtonContent }
+          {this.props.selectButtonContent}
         </button>
         <div
-          className={ popoverClassName }
-          onMouseEnter={ this.onMouseEnter }
-          onMouseLeave={ this.onMouseLeave }
+          className={popoverClassName}
+          onMouseEnter={this.onMouseEnter}
+          onMouseLeave={this.onMouseLeave}
         >
-          <div className={ theme.selectStickerList }>
-            { stickerElements.toList().toJS() }
+          <div className={theme.selectStickerList}>
+            {stickerElements.toList().toJS()}
           </div>
-          <div className={ theme.selectBottomGradient }></div>
+          <div className={theme.selectBottomGradient} />
         </div>
       </div>
     );

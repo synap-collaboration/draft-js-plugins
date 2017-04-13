@@ -1,9 +1,15 @@
 import React, {
   Component,
+  PropTypes,
 } from 'react';
-import Avatar from './Avatar';
 
 export default class Entry extends Component {
+
+  static propTypes = {
+    entryComponent: PropTypes.any.isRequired,
+    searchValue: PropTypes.string.isRequired,
+    onMentionSelect: PropTypes.func
+  };
 
   constructor(props) {
     super(props);
@@ -16,8 +22,8 @@ export default class Entry extends Component {
 
   onMouseUp = () => {
     if (this.mouseDown) {
-      this.mouseDown = false;
       this.props.onMentionSelect(this.props.mention);
+      this.mouseDown = false;
     }
   };
 
@@ -33,19 +39,20 @@ export default class Entry extends Component {
   };
 
   render() {
-    const { theme = {} } = this.props;
+    const { theme = {}, searchValue } = this.props;
     const className = this.props.isFocused ? theme.mentionSuggestionsEntryFocused : theme.mentionSuggestionsEntry;
+    const EntryComponent = this.props.entryComponent;
     return (
-      <div
-        className={ className }
-        onMouseDown={ this.onMouseDown }
-        onMouseUp={ this.onMouseUp }
-        onMouseEnter={ this.onMouseEnter }
+      <EntryComponent
+        className={className}
+        onMouseDown={this.onMouseDown}
+        onMouseUp={this.onMouseUp}
+        onMouseEnter={this.onMouseEnter}
         role="option"
-      >
-        <Avatar mention={ this.props.mention } theme={ theme } />
-        <span className={ theme.mentionSuggestionsEntryText }>{ this.props.mention.get('name') }</span>
-      </div>
+        theme={theme}
+        mention={this.props.mention}
+        searchValue={searchValue}
+      />
     );
   }
 }

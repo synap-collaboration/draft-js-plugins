@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { EditorState } from 'draft-js';
+// eslint-disable-next-line import/no-unresolved
 import Editor from 'draft-js-plugins-editor';
+// eslint-disable-next-line import/no-unresolved
 import createMentionPlugin from 'draft-js-mention-plugin';
-import editorStyles from './editorStyles.css';
 import { fromJS } from 'immutable';
+import editorStyles from './editorStyles.css';
 
 const mentionPlugin = createMentionPlugin();
 const { MentionSuggestions } = mentionPlugin;
@@ -23,7 +25,8 @@ export default class SimpleMentionEditor extends Component {
   };
 
   onSearchChange = ({ value }) => {
-    require('whatwg-fetch');
+    // An import statment would break server-side rendering.
+    require('whatwg-fetch'); // eslint-disable-line global-require
 
     // while you normally would have a dynamic server that takes the value as
     // a workaround we use this workaround to show different results
@@ -44,21 +47,21 @@ export default class SimpleMentionEditor extends Component {
   };
 
   focus = () => {
-    this.refs.editor.focus();
+    this.editor.focus();
   };
 
   render() {
     return (
-      <div className={ editorStyles.editor } onClick={ this.focus }>
+      <div className={editorStyles.editor} onClick={this.focus}>
         <Editor
-          editorState={ this.state.editorState }
+          editorState={this.state.editorState}
           onChange={this.onChange}
           plugins={plugins}
-          ref="editor"
+          ref={(element) => { this.editor = element; }}
         />
         <MentionSuggestions
-          onSearchChange={ this.onSearchChange }
-          suggestions={ this.state.suggestions }
+          onSearchChange={this.onSearchChange}
+          suggestions={this.state.suggestions}
         />
       </div>
     );

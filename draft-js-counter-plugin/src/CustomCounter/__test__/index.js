@@ -1,8 +1,8 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import createCounterPlugin from '../../index';
 import { expect } from 'chai';
 import { EditorState, ContentState } from 'draft-js';
+import createCounterPlugin from '../../index';
 
 describe('CounterPlugin Line Counter', () => {
   const createEditorStateFromText = (text) => {
@@ -31,7 +31,7 @@ describe('CounterPlugin Line Counter', () => {
     };
 
     const result = mount(
-      <CustomCounter countFunction={ countFunction } />
+      <CustomCounter countFunction={countFunction} />
     );
     expect(result).to.have.text('5');
   });
@@ -51,7 +51,7 @@ describe('CounterPlugin Line Counter', () => {
     };
 
     const result = mount(
-      <CustomCounter countFunction={ countFunction } />
+      <CustomCounter countFunction={countFunction} />
     );
     expect(result).to.have.text('6');
   });

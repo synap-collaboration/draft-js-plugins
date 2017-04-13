@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { mount, shallow } from 'enzyme';
-import PluginEditor, { createEditorStateWithText } from '../../index';
 import { expect } from 'chai';
-import { EditorState } from 'draft-js';
+import { EditorState, DefaultDraftBlockRenderMap, Editor } from 'draft-js';
+import { Map } from 'immutable';
 import sinon from 'sinon';
+import PluginEditor, { createEditorStateWithText } from '../../index';
 
 /* For use in integration tests, as in where you need to test the
  * Editor component as well */
@@ -24,8 +25,8 @@ class TestEditor extends Component {
     return (
       <PluginEditor
         {...this.props}
-        editorState={ this.state.editorState }
-        onChange={ this.onChange }
+        editorState={this.state.editorState}
+        onChange={this.onChange}
       />
     );
   }
@@ -33,7 +34,7 @@ class TestEditor extends Component {
 
 describe('Editor', () => {
   describe('renders the Editor', () => {
-    const onChange = sinon.spy();
+    const changeSpy = sinon.spy();
     let editorState;
 
     beforeEach(() => {
@@ -43,22 +44,24 @@ describe('Editor', () => {
     it('with an empty plugins list provided', () => {
       const result = mount(
         <PluginEditor
-          editorState={ editorState }
-          onChange={ onChange }
-          plugins={ [] }
+          editorState={editorState}
+          onChange={changeSpy}
+          plugins={[]}
         />
       );
-      expect(result).to.have.ref('editor');
+      expect(result.node.props.onChange).to.eq(changeSpy);
+      expect(result.node.props.editorState).to.eq(editorState);
     });
 
     it('without the plugins property provided', () => {
       const result = mount(
         <PluginEditor
-          editorState={ editorState }
-          onChange={ onChange }
+          editorState={editorState}
+          onChange={changeSpy}
         />
       );
-      expect(result).to.have.ref('editor');
+      expect(result.node.props.onChange).to.eq(changeSpy);
+      expect(result.node.props.editorState).to.eq(editorState);
     });
 
     it('with a plugin provided', () => {
@@ -67,19 +70,20 @@ describe('Editor', () => {
       const plugins = [customPlugin];
       const result = mount(
         <PluginEditor
-          editorState={ editorState }
-          onChange={ onChange }
-          plugins={ plugins }
+          editorState={editorState}
+          onChange={changeSpy}
+          plugins={plugins}
         />
       );
-      expect(result).to.have.ref('editor');
+      expect(result.node.props.onChange).to.eq(changeSpy);
+      expect(result.node.props.editorState).to.eq(editorState);
     });
 
     it('and by default adds the defaultKeyBindings plugin', () => {
       const result = mount(
         <PluginEditor
-          editorState={ editorState }
-          onChange={ onChange }
+          editorState={editorState}
+          onChange={changeSpy}
         />
       );
       const pluginEditor = result.instance();
@@ -89,9 +93,9 @@ describe('Editor', () => {
     it('without the defaultKeyBindings plugin if deactivated', () => {
       const result = mount(
         <PluginEditor
-          editorState={ editorState }
-          onChange={ onChange }
-          defaultKeyBindings={ false }
+          editorState={editorState}
+          onChange={changeSpy}
+          defaultKeyBindings={false}
         />
       );
       const pluginEditor = result.instance();
@@ -100,12 +104,12 @@ describe('Editor', () => {
   });
 
   describe('with plugins', () => {
-    let onChange;
+    let changeSpy;
     let editorState;
 
     beforeEach(() => {
       editorState = EditorState.createEmpty();
-      onChange = sinon.spy();
+      changeSpy = sinon.spy();
     });
 
     it('calls the on-hooks of the plugin', () => {
@@ -120,9 +124,9 @@ describe('Editor', () => {
       ];
       const result = shallow(
         <PluginEditor
-          editorState={ editorState }
-          onChange={ onChange }
-          plugins={ plugins }
+          editorState={editorState}
+          onChange={changeSpy}
+          plugins={plugins}
         />
       );
 
@@ -153,9 +157,9 @@ describe('Editor', () => {
       ];
       const result = shallow(
         <PluginEditor
-          editorState={ editorState }
-          onChange={ onChange }
-          plugins={ plugins }
+          editorState={editorState}
+          onChange={changeSpy}
+          plugins={plugins}
         />
       );
 
@@ -169,6 +173,7 @@ describe('Editor', () => {
         getProps: pluginEditor.getProps,
         getReadOnly: pluginEditor.getReadOnly,
         setReadOnly: pluginEditor.setReadOnly,
+        getEditorRef: pluginEditor.getEditorRef,
       };
       draftEditor.props.handleKeyCommand('command');
       expect(plugin.handleKeyCommand).has.been.calledOnce();
@@ -192,9 +197,9 @@ describe('Editor', () => {
       ];
       const result = mount(
         <PluginEditor
-          editorState={ editorState }
-          onChange={ onChange }
-          plugins={ plugins }
+          editorState={editorState}
+          onChange={changeSpy}
+          plugins={plugins}
         />
       );
 
@@ -213,7 +218,7 @@ describe('Editor', () => {
     it('calls the handle- and on-hooks of the first plugin and not the second in case it was handeled', () => {
       const plugins = [
         {
-          handleKeyCommand: sinon.stub().returns(true),
+          handleKeyCommand: sinon.stub().returns('handled'),
           onUpArrow: sinon.stub().returns(true),
         },
         {
@@ -223,9 +228,9 @@ describe('Editor', () => {
       ];
       const result = shallow(
         <PluginEditor
-          editorState={ editorState }
-          onChange={ onChange }
-          plugins={ plugins }
+          editorState={editorState}
+          onChange={changeSpy}
+          plugins={plugins}
         />
       );
 
@@ -256,9 +261,9 @@ describe('Editor', () => {
       ];
       const result = shallow(
         <PluginEditor
-          editorState={ editorState }
-          onChange={ onChange }
-          plugins={ plugins }
+          editorState={editorState}
+          onChange={changeSpy}
+          plugins={plugins}
         />
       );
 
@@ -283,9 +288,9 @@ describe('Editor', () => {
       ];
       const result = shallow(
         <PluginEditor
-          editorState={ editorState }
-          onChange={ onChange }
-          plugins={ plugins }
+          editorState={editorState}
+          onChange={changeSpy}
+          plugins={plugins}
         />
       );
 
@@ -299,6 +304,7 @@ describe('Editor', () => {
         getProps: pluginEditor.getProps,
         getReadOnly: pluginEditor.getReadOnly,
         setReadOnly: pluginEditor.setReadOnly,
+        getEditorRef: pluginEditor.getEditorRef,
       };
       draftEditor.props.blockRendererFn('command');
       expect(plugin.blockRendererFn).has.been.calledOnce();
@@ -327,9 +333,9 @@ describe('Editor', () => {
       ];
       const result = mount(
         <PluginEditor
-          editorState={ editorState }
-          onChange={ onChange }
-          plugins={ plugins }
+          editorState={editorState}
+          onChange={changeSpy}
+          plugins={plugins}
         />
       );
       const expected = {
@@ -370,10 +376,10 @@ describe('Editor', () => {
 
       const result = mount(
         <PluginEditor
-          editorState={ editorState }
-          customStyleMap={ customStyleMap }
-          onChange={ onChange }
-          plugins={ plugins }
+          editorState={editorState}
+          customStyleMap={customStyleMap}
+          onChange={changeSpy}
+          plugins={plugins}
         />
       );
 
@@ -391,6 +397,126 @@ describe('Editor', () => {
       const pluginEditor = result.instance();
       expect(pluginEditor.resolveCustomStyleMap()).to.deep.equal(expected);
     });
+
+    it('combines customStyleMap props from plugins and the editor', () => {
+      const plugins = [
+        {
+          customStyleMap: {
+            orange: {
+              color: 'rgba(255, 127, 0, 1.0)',
+            },
+          },
+        },
+        {
+          customStyleMap: {
+            yellow: {
+              color: 'rgba(180, 180, 0, 1.0)',
+            },
+          },
+        },
+      ];
+
+      const customStyleMap = {
+        blue: {
+          color: 'blue',
+        },
+      };
+
+      const result = mount(
+        <PluginEditor
+          editorState={editorState}
+          customStyleMap={customStyleMap}
+          onChange={changeSpy}
+          plugins={plugins}
+        />
+      );
+
+      const expected = {
+        orange: {
+          color: 'rgba(255, 127, 0, 1.0)',
+        },
+        yellow: {
+          color: 'rgba(180, 180, 0, 1.0)',
+        },
+        blue: {
+          color: 'blue',
+        },
+      };
+      const pluginEditor = result.instance();
+      expect(pluginEditor.resolveCustomStyleMap()).to.deep.equal(expected);
+    });
+
+    it('combines the blockRenderMap from all plugins', () => {
+      const plugins = [
+        {
+          blockRenderMap: Map({ sticker: { element: 'div' } }),
+        },
+        {
+          blockRenderMap: Map({ test: { element: 'test' } }),
+        },
+      ];
+      const result = mount(
+        <PluginEditor
+          editorState={editorState}
+          onChange={changeSpy}
+          plugins={plugins}
+        />
+      );
+      const expected = DefaultDraftBlockRenderMap.merge(Map({
+        sticker: { element: 'div' },
+        test: { element: 'test' },
+      }));
+      const pluginEditor = result.instance();
+      expect(pluginEditor.resolveblockRenderMap()).to.deep.equal(expected);
+    });
+
+    it('combines blockRenderMap props from plugins and the editor', () => {
+      const plugins = [
+        {
+          blockRenderMap: Map({ sticker: { element: 'div' } }),
+        },
+        {
+          blockRenderMap: Map({ test: { element: 'test' } },
+        ),
+        },
+      ];
+
+      const customBlockRenderMap = Map({ sticker: { element: 'customDiv' } });
+
+      const result = mount(
+        <PluginEditor
+          editorState={editorState}
+          blockRenderMap={customBlockRenderMap}
+          onChange={changeSpy}
+          plugins={plugins}
+        />
+      );
+
+      const expected = DefaultDraftBlockRenderMap.merge(Map({
+        sticker: { element: 'customDiv' },
+        test: { element: 'test' },
+      }));
+
+      const pluginEditor = result.instance();
+      expect(pluginEditor.resolveblockRenderMap()).to.deep.equal(expected);
+    });
+
+    it('returns the component reference when we call the getEditorRef inside of a plugin', () => {
+      const spy = sinon.spy();
+      const plugins = [{
+        onChange: (state, pluginFunctions) => spy(pluginFunctions.getEditorRef())
+      }];
+      const pluginEditorComponent = mount(
+        <PluginEditor
+          editorState={editorState}
+          plugins={plugins}
+          onChange={changeSpy}
+        />
+      );
+      const draftEditorComponent = (pluginEditorComponent.find(Editor)).nodes[0];
+      draftEditorComponent.focus();
+      expect(spy.getCall(1).args[0]).to.deep.equal(draftEditorComponent);
+    });
   });
 
   describe('passed proxy to DraftEditor', () => {
@@ -398,13 +524,13 @@ describe('Editor', () => {
     let pluginEditor;
 
     beforeEach(() => {
-      const onChange = sinon.spy();
+      const changeSpy = sinon.spy();
       const editorState = EditorState.createEmpty();
       const result = mount(
         <PluginEditor
-          editorState={ editorState }
-          onChange={ onChange }
-          plugins={ [] }
+          editorState={editorState}
+          onChange={changeSpy}
+          plugins={[]}
         />
       );
       draftEditor = result.node;
@@ -425,7 +551,7 @@ describe('Editor', () => {
   });
 
   describe('custom prop comes before plugin hook', () => {
-    const onChange = sinon.spy();
+    const changeSpy = sinon.spy();
     let editorState;
     let customHook;
 
@@ -440,10 +566,10 @@ describe('Editor', () => {
       };
       const result = mount(
         <PluginEditor
-          editorState={ editorState }
-          onChange={ onChange }
-          plugins={ [plugin] }
-          onUpArrow={ customHook }
+          editorState={editorState}
+          onChange={changeSpy}
+          plugins={[plugin]}
+          onUpArrow={customHook}
         />
       );
       const draftEditor = result.node;
@@ -458,10 +584,10 @@ describe('Editor', () => {
       };
       const result = mount(
         <PluginEditor
-          editorState={ editorState }
-          onChange={ onChange }
-          plugins={ [plugin] }
-          blockRendererFn={ customHook }
+          editorState={editorState}
+          onChange={changeSpy}
+          plugins={[plugin]}
+          blockRendererFn={customHook}
         />
       );
       const draftEditor = result.node;
@@ -478,7 +604,7 @@ describe('Editor', () => {
     let plugins;
     let decorators;
 
-    before(() => {
+    beforeEach(() => {
       text = "Hello there how's it going fella";
 
       decorator = {
@@ -492,6 +618,11 @@ describe('Editor', () => {
             strategy: (block, cb) => cb(4, 7),
             component: () => <span className="plugin" />,
           },
+          {
+            getDecorations: () => [],
+            getComponentForKey: () => <span className="custom" />,
+            getPropsForKey: () => {},
+          },
         ],
       };
 
@@ -503,7 +634,7 @@ describe('Editor', () => {
       const pluginStrategy = sinon.spy(plugin.decorators[0], 'strategy');
       const decoratorStrategy = sinon.spy(decorator, 'strategy');
 
-      mount(<TestEditor { ...{ plugins, decorators, text } } />);
+      mount(<TestEditor {...{ plugins, decorators, text }} />);
 
       expect(decoratorStrategy).has.been.called();
       expect(pluginStrategy).has.been.called();
@@ -513,14 +644,26 @@ describe('Editor', () => {
       const pluginComponent = sinon.spy(plugin.decorators[0], 'component');
       const decoratorComponent = sinon.spy(decorator, 'component');
 
-      const wrapper = mount(<TestEditor { ...{ plugins, decorators, text } } />);
-      const decoratorComponents = wrapper.findWhere(n => n.hasClass('decorator'));
-      const pluginComponents = wrapper.findWhere(n => n.hasClass('plugin'));
+      const wrapper = mount(<TestEditor {...{ plugins, decorators, text }} />);
+      const decoratorComponents = wrapper.findWhere((n) => n.hasClass('decorator'));
+      const pluginComponents = wrapper.findWhere((n) => n.hasClass('plugin'));
 
       expect(decoratorComponent).has.been.called();
       expect(pluginComponent).has.been.called();
       expect(decoratorComponents.length).to.equal(1);
       expect(pluginComponents.length).to.equal(1);
+    });
+
+    it('uses both custom and simple decorators in plugins', () => {
+      const simplePluginDecoratorStrategy = sinon.spy(plugin.decorators[0], 'strategy');
+      const customPluginDecorator = sinon.spy(plugin.decorators[1], 'getDecorations');
+      const decoratorStrategy = sinon.spy(decorator, 'strategy');
+
+      mount(<TestEditor {...{ plugins, decorators, text }} />);
+
+      expect(simplePluginDecoratorStrategy).has.been.called();
+      expect(customPluginDecorator).has.been.called();
+      expect(decoratorStrategy).has.been.called();
     });
   });
 });

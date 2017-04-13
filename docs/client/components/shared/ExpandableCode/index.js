@@ -1,7 +1,9 @@
+/* eslint-disable react/no-danger */
+
 import React, { Component, PropTypes } from 'react';
 import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
-import styles from './styles.css';
 import 'prismjs/themes/prism.css';
+import styles from './styles.css';
 
 export default class Code extends Component {
 
@@ -13,7 +15,7 @@ export default class Code extends Component {
     collapsed: true,
   };
 
-  shouldComponentUpdate = shouldComponentUpdate;
+  shouldComponentUpdate = shouldComponentUpdate; // eslint-disable-line no-redeclare
 
   onCodeClick = () => {
     const collapsed = !this.state.collapsed;
@@ -26,12 +28,12 @@ export default class Code extends Component {
     const nameClassname = this.props.name ? styles.name : styles.hiddenName;
     const codeClassname = this.state.collapsed ? styles.collapsed : styles.expanded;
     return (
-      <div className={ styles.root }>
-        <div className={ nameClassname }>
-          <span>{ this.props.name }</span>
-          <span onClick={ this.onCodeClick } className={ styles.indicator }>{ this.state.collapsed ? '▼' : '▲' }</span>
+      <div className={styles.root}>
+        <div className={nameClassname}>
+          <span>{this.props.name}</span>
+          <span onClick={this.onCodeClick} className={styles.indicator}>{this.state.collapsed ? '▼' : '▲'}</span>
         </div>
-        <pre className={ codeClassname }>
+        <pre className={codeClassname}>
           <code
             dangerouslySetInnerHTML={{ __html: this.props.code }}
           />

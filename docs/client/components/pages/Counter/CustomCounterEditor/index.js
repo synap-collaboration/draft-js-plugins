@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor';
-import createCounterPlugin from 'draft-js-counter-plugin';
+import Editor, { createEditorStateWithText } from 'draft-js-plugins-editor'; // eslint-disable-line import/no-unresolved
+import createCounterPlugin from 'draft-js-counter-plugin'; // eslint-disable-line import/no-unresolved
 import editorStyles from './editorStyles.css';
 import counterStyles from './counterStyles.css';
 
@@ -31,9 +31,10 @@ export default class CustomCounterEditor extends Component {
   };
 
   focus = () => {
-    this.refs.editor.focus();
+    this.editor.focus();
   };
 
+  // eslint-disable-next-line class-methods-use-this
   customCountFunction(str) {
     const wordArray = str.match(/\S+/g);  // matches words according to whitespace
     return wordArray ? wordArray.length : 0;
@@ -42,19 +43,19 @@ export default class CustomCounterEditor extends Component {
   render() {
     return (
       <div>
-        <div className={ editorStyles.editor } onClick={ this.focus }>
+        <div className={editorStyles.editor} onClick={this.focus}>
           <Editor
             editorState={this.state.editorState}
             onChange={this.onChange}
             plugins={plugins}
-            ref="editor"
+            ref={(element) => { this.editor = element; }}
           />
         </div>
         <div><CharCounter limit={200} /> characters</div>
         <div><WordCounter limit={30} /> words</div>
         <div><LineCounter limit={10} /> lines</div>
         <div>
-          <CustomCounter limit={40} countFunction={ this.customCountFunction } />
+          <CustomCounter limit={40} countFunction={this.customCountFunction} />
           <span> words (custom function)</span>
         </div>
         <br />
